@@ -60,8 +60,9 @@ func handler(w http.ResponseWriter, r *http.Request) {
 func runLighthouse(req Request) {
 	cmd := exec.Command("lighthouse", req.Website, "--quiet", "--chrome-flags=--headless --no-sandbox --disable-dev-shm-usage --disable-gpu --ignore-certificate-errors", "--output=json", "--output-path=report.json")
 	fmt.Println("Running Lighthouse for", req.Website)
-	if err := cmd.Run(); err != nil {
-		fmt.Println("Error running Lighthouse:", err)
+	if out, err := cmd.CombinedOutput(); err != nil {
+		fmt.Printf("Error running Lighthouse: %v\n\n%s\n", err, string(out))
+		
 		return
 	}
 
